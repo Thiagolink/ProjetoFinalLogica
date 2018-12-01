@@ -16,12 +16,16 @@ import java.util.ArrayList;
  * @author hiarl
  */
 public class GerenciadorUsuarios {
-    private IDaoUsuarioPadrao daoUsuario;
-
+    private /*@ spec_public nullable @*/ IDaoUsuarioPadrao daoUsuario;
+    
+    /*@ assignable daoUsuario; 
+      @ ensures daoUsuario != null;
+      @*/
     public GerenciadorUsuarios() {
         this.daoUsuario = DaoUsuarioPadrao.getInstance();
     }
-
+    /*@ requires usuario != null;
+      @*/
     public void cadastrarUsuario(UsuarioPadrao usuario) throws UsuarioInvalidoException{
         if(validarUsuario(usuario)) {
             this.daoUsuario.adicionarUsuario(usuario);
@@ -35,7 +39,8 @@ public class GerenciadorUsuarios {
     public void atualizarUsuario(UsuarioPadrao usuario){
         this.daoUsuario.atualizarUsuario(usuario);
     }
-    
+    /*@ ensures \result != null;
+      @*/
     public ArrayList<UsuarioPadrao> listarUsuarios(){
         return this.daoUsuario.listarUsuarios();
     }
@@ -44,11 +49,26 @@ public class GerenciadorUsuarios {
         return this.daoUsuario.pegarUsuario(id);
     }
     
-    public UsuarioPadrao getUsuario(String login){
+    public /*@ nullable @*/ UsuarioPadrao getUsuario(String login){
         return this.daoUsuario.pegarUsuario(login);
     }
-
-    private boolean validarUsuario(UsuarioPadrao usuario) throws UsuarioInvalidoException {
+    
+  /*@      private normal_behavior
+    @              requires usuario.getNome().length()  > 0;
+    @		       requires usuario.getSenha().length() > 0;
+    @              requires usuario.getLogin().length() > 0;
+    @	           requires daoUsuario.pegarUsuario(usuario.getId()) == null;
+    @              ensures \result == true;
+    @ also
+    @      private exceptional_behavior
+    @			   requires usuario.getNome().length()  == 0  || 
+    @                       usuario.getSenha().length() == 0  || 
+    @                       usuario.getLogin().length() == 0  ||
+    @                       daoUsuario.pegarUsuario(usuario.getId()) != null ||
+    @						daoUsuario.pegarUsuario(usuario.getLogin()) != null; 	
+    @              signals_only UsuarioInvalidoException;
+    @*/
+    private /*@ pure @*/ boolean validarUsuario(UsuarioPadrao usuario) throws UsuarioInvalidoException {
         if(usuario.getNome().equals("")){
             throw new UsuarioInvalidoException("Nome de usuario vazio.");
         }else if(usuario.getLogin().equals("")){

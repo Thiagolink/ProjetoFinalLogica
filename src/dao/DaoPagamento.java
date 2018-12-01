@@ -16,16 +16,25 @@ import java.util.Set;
  * @author Thiago
  */
 public class DaoPagamento implements IDaoPagamento{
-    static DaoPagamento daoPagamento = null;
-    private Set<Pagamento> pagamentos;
+    static /*@ spec_public nullable @*/ DaoPagamento daoPagamento = null;
+    private /*@ spec_public nullable @*/ Set<Pagamento> pagamentos;//@ in listpagamentos;
 
+  /*@ private represents listpagamentos <- pagamentos.toArray();
+    @*/
+
+  /*@ assignable daoPagamento;
+	@ ensures \result != null && daoPagamento != null;
+	@*/
     public static DaoPagamento getInstance() {
         if(daoPagamento == null){
             daoPagamento = new DaoPagamento();
         }
         return daoPagamento;
     }
-
+    
+  /*@ assignable pagamentos;
+	@ ensures pagamentos != null;
+	@*/
     public DaoPagamento() {
         pagamentos = new HashSet<>();
     }
@@ -44,7 +53,7 @@ public class DaoPagamento implements IDaoPagamento{
 			Pagamento d = it.next();
 			
 			//Remove o objeto armazenado se o codigo for igual
-			if(d.getIdDemanda()== pagamento.getIdDemanda()) {
+			if(d.getIdDemanda() == pagamento.getIdDemanda()) {
 				it.remove();
 				return;
 			}
@@ -66,7 +75,7 @@ public class DaoPagamento implements IDaoPagamento{
     }
 
     @Override
-    public Pagamento pegarPagamento(long id) {
+    public /*@ pure nullable @*/Pagamento pegarPagamento(long id) {
         Iterator<Pagamento> it = pagamentos.iterator();
 		while(it.hasNext()) {
 			Pagamento p = it.next();
@@ -80,7 +89,7 @@ public class DaoPagamento implements IDaoPagamento{
     }
 
     @Override
-    public ArrayList<Pagamento> listarPagamento() {
+    public /*@ pure @*/ArrayList<Pagamento> listarPagamento() {
         ArrayList<Pagamento> resultList = new ArrayList<>();
 		
 		Iterator<Pagamento> it = pagamentos.iterator();

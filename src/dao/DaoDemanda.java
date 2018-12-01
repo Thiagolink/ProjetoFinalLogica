@@ -17,16 +17,24 @@ import java.util.Set;
  */
 public class DaoDemanda implements IDaoDemanda {
 
-    static DaoDemanda daoDemanda = null;
-    private Set<Demanda> demandas;
+    static   /*@ spec_public nullable @*/ DaoDemanda daoDemanda = null;
+    private /*@  spec_public nullable @*/Set<Demanda> demandas; //@ in listdemandas;
 
+    /*@ private represents listdemandas <- demandas.toArray();
+      @*/
+    
+    /*@ assignable daoDemanda;
+	  @ ensures \result != null && daoDemanda != null;
+	  @*/
     public static DaoDemanda getInstance() {
         if (daoDemanda == null) {
             daoDemanda = new DaoDemanda();
         }
         return daoDemanda;
     }
-
+    /*@ assignable demandas;
+	  @ ensures demandas != null;
+	  @*/
     public DaoDemanda() {
         demandas = new HashSet<>();
     }
@@ -61,7 +69,7 @@ public class DaoDemanda implements IDaoDemanda {
         }
     }
 
-    public Demanda pegarDemanda(long id) {
+    public /*@ pure nullable @*/ Demanda pegarDemanda(long id) {
         Iterator<Demanda> it = demandas.iterator();
         while (it.hasNext()) {
             Demanda p = it.next();
@@ -74,7 +82,7 @@ public class DaoDemanda implements IDaoDemanda {
         return null;
     }
 
-    public ArrayList<Demanda> listarDemandas() {
+    public /*@ pure @*/ArrayList<Demanda> listarDemandas() {
         ArrayList<Demanda> resultList = new ArrayList<>();
 
         Iterator<Demanda> it = demandas.iterator();

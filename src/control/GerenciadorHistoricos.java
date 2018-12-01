@@ -16,27 +16,45 @@ import java.util.ArrayList;
  * @author hiarl
  */
 public class GerenciadorHistoricos {
-    private IDaoHistorico daoHistorico;
+    private /*@ spec_public nullable @*/ IDaoHistorico daoHistorico;
 
+    /*@ assignable daoHistorico;
+	  @ ensures daoHistorico != null;
+	  @*/
     public GerenciadorHistoricos() {
         daoHistorico = DaoHistorico.getInstance();
     }
-
+    
+    /*@ requires historico != null;
+	  @*/
     public void adicionarHistorico(Historico historico) throws HistoricoInvalidoException{
         if(validarHistorico(historico)) {
             this.daoHistorico.adicionarHistorico(historico);
         }
     }
 
+    /*@ requires historico != null;
+	  @*/
     public void removerHistorico(Historico historico) {
         this.daoHistorico.removerHistorico(historico);
     }
 
+    /*@ ensures \result != null;
+	  @*/
     public ArrayList<Historico> listarHistorico(long idDemanda){
         return this.daoHistorico.pegarHistorico(idDemanda);
     }
 
-        private boolean validarHistorico(Historico historico) throws HistoricoInvalidoException {
+    /*@		private normal_behavior
+    @		requires historico != null;
+    @		ensures \result == true;
+    @	also
+    @		private exceptional_behavior
+    @		requires historico.getDescricao().equals("") || historico.getUsuarioSolicitante().equals("");
+    @		signals_only HistoricoInvalidoException;
+    @		signals (HistoricoInvalidoException e);
+    @*/
+    private /*@ pure @*/ boolean validarHistorico(Historico historico) throws HistoricoInvalidoException {
         if(historico.getDescricao().equals("")){
             throw new HistoricoInvalidoException("Descrição vazio.");
         }else if(historico.getUsuarioSolicitante().equals("")){

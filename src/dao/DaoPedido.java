@@ -17,16 +17,25 @@ import java.util.Set;
  */
 public class DaoPedido implements IDaoPedido{
     
-    static DaoPedido daoServico = null;
-    private Set<Pedido> pedidos;
+    static   /*@ spec_public nullable @*/ DaoPedido daoServico = null;
+    private /*@ spec_public nullable @*/ Set<Pedido> pedidos;//@ in listpedidos;
+    
+    /*@ private represents listpedidos <- pedidos.toArray();
+      @*/
 
+    /*@ assignable daoServico;
+	  @ ensures \result != null && daoServico != null;
+	  @*/
     public static DaoPedido getInstance() {
         if(daoServico == null){
             daoServico = new DaoPedido();
         }
         return daoServico;
     }
-
+    
+  /*@ assignable pedidos;
+	@ ensures pedidos != null;
+	@*/
     public DaoPedido() {
         pedidos = new HashSet<>();
     }
@@ -67,7 +76,7 @@ public class DaoPedido implements IDaoPedido{
     }
 
     @Override
-    public Pedido pegarPedido(long id) {
+    public /*@ pure nullable @*/ Pedido pegarPedido(long id) {
         Iterator<Pedido> it = pedidos.iterator();
 		while(it.hasNext()) {
 			Pedido d = it.next();
@@ -87,7 +96,7 @@ public class DaoPedido implements IDaoPedido{
 		Iterator<Pedido> it = pedidos.iterator();
 		while(it.hasNext()) {
                         Pedido d = it.next();
-                        if(d.getIdUsuarioSolicitante()== (usuario))
+                        if(d.getIdUsuarioSolicitante() == (usuario))
                             resultList.add(d);
 		}
         

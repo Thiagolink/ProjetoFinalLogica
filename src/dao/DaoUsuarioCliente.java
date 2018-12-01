@@ -17,22 +17,29 @@ import java.util.Set;
  */
 public class DaoUsuarioCliente implements IDaoUsuarioCliente{
     
-    static DaoUsuarioCliente daoUsuario = null;
-    private Set<UsuarioCliente> usuarios;
+    static /*@ spec_public nullable @*/ DaoUsuarioCliente daoUsuario = null;
+    private /*@ spec_public nullable @*/ Set<UsuarioCliente> usuarios; //@ in users;
     
+    /*@ private represents users <- usuarios.toArray();
+      @*/
+    
+    /*@ assignable daoUsuario;
+	  @ ensures \result != null && daoUsuario != null;
+	  @*/ 
     public static DaoUsuarioCliente getInstance() {
         if(daoUsuario == null){
             daoUsuario = new DaoUsuarioCliente();
         }
         return daoUsuario;
     }
-
+    
+    /*@ assignable usuarios;
+	  @ ensures usuarios != null;
+	  @*/ 
     public DaoUsuarioCliente() {
         usuarios = new HashSet<>();
     }
     
-    
-
     public void adicionarCliente(UsuarioCliente usuario) {
         usuarios.add(usuario);
     }
@@ -65,7 +72,7 @@ public class DaoUsuarioCliente implements IDaoUsuarioCliente{
                 }
     }
 
-    public UsuarioCliente pegarCliente(long id) {
+    public  /*@ pure nullable @*/ UsuarioCliente pegarCliente(long id) {
         Iterator<UsuarioCliente> it = usuarios.iterator();
 		while(it.hasNext()) {
 			UsuarioCliente u = it.next();
@@ -90,7 +97,7 @@ public class DaoUsuarioCliente implements IDaoUsuarioCliente{
     }
 
     @Override
-    public UsuarioCliente pegarCliente(String login) {
+    public  /*@ pure nullable @*/ UsuarioCliente pegarCliente(String login) {
         Iterator<UsuarioCliente> it = usuarios.iterator();
 		while(it.hasNext()) {
 			UsuarioCliente u = it.next();

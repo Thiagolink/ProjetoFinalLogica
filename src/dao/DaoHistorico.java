@@ -17,16 +17,25 @@ import java.util.Set;
  */
 public class DaoHistorico implements IDaoHistorico{
 
-    static DaoHistorico daoHistorico = null;
-    private Set<Historico> historicos;
-
+    static /*@ spec_public nullable @*/ DaoHistorico daoHistorico = null;
+    private /*@ spec_public nullable @*/ Set<Historico> historicos; //@ in listhistoricos;
+  
+  /*@ private represents listhistoricos <- historicos.toArray();
+    @*/
+  
+  /*@ assignable daoHistorico;
+	@ ensures \result != null && daoHistorico != null;
+ 	@*/
     public static DaoHistorico getInstance() {
         if(daoHistorico == null){
             daoHistorico = new DaoHistorico();
         }
         return daoHistorico;
     }
-
+  
+  /*@ assignable historicos;
+	@ ensures historicos != null;
+	@*/
     public DaoHistorico() {
         historicos = new HashSet<>();
     }
@@ -53,7 +62,7 @@ public class DaoHistorico implements IDaoHistorico{
     }
 
     @Override
-    public ArrayList<Historico> pegarHistorico(long idDemanda) {
+    public /*@ pure @*/ArrayList<Historico> pegarHistorico(long idDemanda) {
         Iterator<Historico> it = historicos.iterator();
         ArrayList<Historico> resultList = new ArrayList<>();
 		while(it.hasNext()) {

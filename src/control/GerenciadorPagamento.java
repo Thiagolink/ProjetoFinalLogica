@@ -17,15 +17,27 @@ import java.util.ArrayList;
  */
 public class GerenciadorPagamento {
 
-    private IDaoPagamento daoPagamento;
+    private /*@ spec_public nullable @*/  IDaoPagamento daoPagamento;
 
+    /*@ assignable daoPagamento;
+	  @ ensures daoPagamento != null;
+	  @*/
     public GerenciadorPagamento() {
 
         daoPagamento = DaoPagamento.getInstance();
     }
 
-    public void cadastrarPagamento(Pagamento pagamento) throws PagamentoInvalidoException {
-        if (!pagamento.validar()) {
+    /*@		public normal_behavior
+    @		requires pagamento != null;
+    @		ensures pagamento.validar() == true;
+    @	also
+    @		public exceptional_behavior
+    @		requires pagamento.validar() == false;
+    @		signals_only PagamentoInvalidoException;
+    @		signals (PagamentoInvalidoException e);
+    @*/
+    public /*@ pure @*/ void cadastrarPagamento(Pagamento pagamento) throws PagamentoInvalidoException {
+        if (pagamento.validar()) {
             this.daoPagamento.adicionarPagamento(pagamento);
         }
         else
@@ -34,19 +46,27 @@ public class GerenciadorPagamento {
 
     }
 
+    /*@ requires pagamento != null;
+	  @*/
     public void removerPagamento(Pagamento pagamento) {
         this.daoPagamento.removerPagamento(pagamento);
     }
-
+    
+    /*@ requires pagamento != null;
+	  @*/
     public void atualizarPagamento(Pagamento pagamento) {
         this.daoPagamento.atualizarPagamento(pagamento);
     }
 
+    /*@ ensures \result != null;
+	  @*/
     public ArrayList<Pagamento> listarPagamentos() {
         return this.daoPagamento.listarPagamento();
     }
 
-    public Pagamento getPagamento(Long id) {
+    /*@ requires 0 <= id;
+	  @*/
+    public Pagamento getPagamento(long id) {
         return this.daoPagamento.pegarPagamento(id);
     }
 }
