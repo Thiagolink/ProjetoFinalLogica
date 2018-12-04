@@ -10,12 +10,16 @@ package domain;
  * @author hiarl
  */
 public abstract class Notificacao {
-    private String mensagem;
+    private /*@ spec_public @*/ String mensagem;
     
     
     public Notificacao() {
     }
 
+    /*@
+     @	requires mensagem != "";
+     @	ensures this.mensagem == mensagem; 
+     @*/
     public Notificacao(String mensagem) {
         this.mensagem = mensagem;
     }
@@ -25,16 +29,18 @@ public abstract class Notificacao {
     /**
      * @return the mensagem
      */
-    public String getMensagem() {
+    public /*@ pure @*/ String getMensagem() {
         return mensagem;
     }
 
-    /**
-     * @param mensagem the mensagem to set
-     */
+    /*@
+    @	requires mensagem != "";
+    @	assignable this.mensagem;
+    @ 	ensures this.mensagem == mensagem;
+    @*/
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
     }
     
-    public abstract void enviar();
+    public /*@ pure @*/ abstract void enviar();
 }

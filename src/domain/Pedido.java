@@ -16,18 +16,35 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Pedido {
 
-    private long idUsuarioSolicitante;
-    private long idPedido;
-    private Date dataAbertura;
-    private long idUsuarioDemandando;
-    private String descricao;
-    private char status;
-    private ArrayList<Demanda> listaProdutos;
-    private static AtomicInteger count = new AtomicInteger();
+    private /*@ spec_public @*/ long idUsuarioSolicitante;
+    private /*@ spec_public @*/ long idPedido;
+    private /*@ spec_public @*/ Date dataAbertura;
+    private /*@ spec_public @*/ long idUsuarioDemandando;
+    private /*@ spec_public @*/ String descricao;
+    private /*@ spec_public @*/ char status;
+    private /*@ spec_public @*/ ArrayList<Demanda> listaProdutos;
+    private static /*@ spec_public @*/ AtomicInteger count = new AtomicInteger();
 
     public Pedido() {
     }
 
+    //Descobrir como comparar char
+    
+    /*@
+    @	
+    @	requires  0 <= idUsuarioSolicitante ;
+    @	requires dataAbertura != null;
+    @ 	requires  0 <= idUsuarioDemandando;
+    @	requires descricao != "";
+    @   requires listaProdutos != null;
+    @	ensures this.idUsuarioSolicitante == idUsuarioSolicitante;
+    @ 	ensures this.idPedido == count.longValue() - 1;
+    @	ensures this.dataAbertura == dataAbertura;
+    @   ensures this.idUsuarioDemandando == idUsuarioDemandando;
+    @   ensures this.descricao == descricao;
+    @   ensures this.status == status;
+    @	ensures this.listaProdutos == listaProdutos;
+    @*/
     public Pedido(long idUsuarioSolicitante, Date dataAbertura,
              String descricao, char status,
             ArrayList<Demanda> listaProdutos) {
@@ -43,27 +60,31 @@ public class Pedido {
     /**
      * @return the idUsuarioSolicitante
      */
-    public long getIdUsuarioSolicitante() {
+    public /*@ pure @*/ long getIdUsuarioSolicitante() {
         return idUsuarioSolicitante;
     }
 
-    /**
-     * @param idUsuarioSolicitante the idUsuarioSolicitante to set
-     */
+    /*@
+    @	requires 0 <= idUsuarioSolicitante;
+    @	assignable this.idUsuarioSolicitante;
+    @ 	ensures this.idUsuarioSolicitante == idUsuarioSolicitante;
+    @*/
     public void setIdUsuarioSolicitante(long idUsuarioSolicitante) {
         this.idUsuarioSolicitante = idUsuarioSolicitante;
     }
 
     /**
-     * @return the idServico
+     * return the idServico
      */
-    public long getIdServico() {
+    public /*@ pure @*/ long getIdServico() {
         return idPedido;
     }
 
-    /**
-     * @param idServico the idServico to set
-     */
+    /*@
+    @	requires 0 <= idPedido;
+    @	assignable this.idPedido;
+    @ 	ensures this.idPedido == idPedido;
+    @*/
     public void setIdServico(long idPedido) {
         this.idPedido = idPedido;
     }
@@ -71,13 +92,15 @@ public class Pedido {
     /**
      * @return the dataAbertura
      */
-    public Date getDataAbertura() {
+    public /*@ pure @*/ Date getDataAbertura() {
         return dataAbertura;
     }
 
-    /**
-     * @param dataAbertura the dataAbertura to set
-     */
+    /*@
+    @	requires dataAbertura != null;
+    @	assignable this.dataAbertura;
+    @ 	ensures this.dataAbertura == dataAbertura;
+    @*/
     public void setDataAbertura(Date dataAbertura) {
         this.dataAbertura = dataAbertura;
     }
@@ -85,13 +108,15 @@ public class Pedido {
     /**
      * @return the idUsuarioServicondo
      */
-    public long getIdUsuarioDemandando() {
+    public /*@ pure @*/ long getIdUsuarioDemandando() {
         return idUsuarioDemandando;
     }
 
-    /**
-     * @param idUsuarioServicondo the idUsuarioServicondo to set
-     */
+    /*@
+    @	requires 0 <= idUsuarioDemandando;
+    @	assignable this.idUsuarioDemandando;
+    @ 	ensures this.idUsuarioDemandando == idUsuarioDemandando;
+    @*/
     public void setIdUsuarioDemandando(long idUsuarioDemandando) {
         this.idUsuarioDemandando = idUsuarioDemandando;
     }
@@ -99,13 +124,22 @@ public class Pedido {
     /**
      * @return the descricao
      */
-    public String getDescricao() {
+    public /*@ pure @*/ String getDescricao() {
         return descricao;
     }
 
-    /**
-     * @param descricao the descricao to set
-     */
+    /*@		public normal_behavior
+    @			requires descricao != "";
+    @			assignable this.descricao;
+    @ 			ensures this.descricao == descricao;
+    @	also
+    @		public exceptional_behavior
+    @		requires !(descricao instanceof String);
+    @		assignable this.descricao;
+    @		signals_only PedidoInvalidoException;
+    @		signals (PedidoInvalidoException e)
+    @				!(descricao instanceof String);
+    @*/
     public void setDescricao(String descricao) throws PedidoInvalidoException {
         if (!(descricao instanceof String)) {
             throw new PedidoInvalidoException("Descrição inválida");
@@ -116,7 +150,7 @@ public class Pedido {
     /**
      * @return the status
      */
-    public char getStatus() {
+    public /*@ pure @*/ char getStatus() {
 
         return status;
     }
@@ -134,15 +168,16 @@ public class Pedido {
     /**
      * @return the listaProdutos
      */
-    public ArrayList<Demanda> getListaProdutos() {
+    public /*@ pure @*/ ArrayList<Demanda> getListaProdutos() {
         return listaProdutos;
     }
 
-    /**
-     * @param listaProdutos the listaProdutos to set
-     */
-    public void setListaProdutos(ArrayList<Demanda> listaProdutos) throws PedidoInvalidoException {
-
+    /*@
+    @	requires listaProdutos != null;
+    @	assignable this.listaProdutos;
+    @ 	ensures this.listaProdutos == listaProdutos;
+    @*/
+    public void setListaProdutos(ArrayList<Demanda> listaProdutos) {
         this.listaProdutos = listaProdutos;
     }
 

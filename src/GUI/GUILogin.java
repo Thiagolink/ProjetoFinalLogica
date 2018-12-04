@@ -10,7 +10,14 @@ package GUI;
  * @author hiarl
  */
 public interface GUILogin {
-    public boolean autenticar(String login, String senha);
+    //@ public nullable model instance String senhasistema;
+	//@ public nullable model instance String loginsistema;
+	
+	/*@ requires login != null && login.length() > 0;
+	  @ requires senha != null && senha.length() > 0;
+	  @ ensures \result <==> (login.equals(loginsistema) && senha.equals(senhasistema));
+	  @*/
+	public boolean autenticar(String login, String senha);
     public void logar();
     
 }

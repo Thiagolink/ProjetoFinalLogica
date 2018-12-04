@@ -10,12 +10,24 @@ package domain;
  * @author Thiago
  */
 public class GerarNotaFiscal {
-    private NotaFiscalBuilder notaFiscalBuilder;
+    private /*@ spec_public @*/ NotaFiscalBuilder notaFiscalBuilder;
 
+    /*@
+     @		requires notaFiscalBuilder != null;
+     @		ensures this.notaFiscalBuilder == notaFiscalBuilder; 
+     @*/
     public GerarNotaFiscal(NotaFiscalBuilder notaFiscalBuilder) {
         this.notaFiscalBuilder = notaFiscalBuilder;
     }
     
+    /*@
+     @		requires pedido != null;
+     @		requires usuario != null;
+     @		requires empresa != "";
+     @		requires pagamento != null;
+     @		ensures  \result != null;
+     @		ensures  \result.getCodigo() == pedido.getIdServico() && \result.getDataFaturamento() == pedido.getDataAbertura(); 
+     @*/
     public NotaFiscal gerarNotaFiscal(Pedido pedido, UsuarioCliente usuario, String empresa, Pagamento pagamento){
         this.notaFiscalBuilder.buildCliente(usuario.getNome());
         this.notaFiscalBuilder.buildEmpresa(empresa);

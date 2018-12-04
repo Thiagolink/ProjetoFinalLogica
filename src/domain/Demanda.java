@@ -5,9 +5,10 @@
  */
 package domain;
 
-import excecao.PedidoInvalidoException;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import excecao.PedidoInvalidoException;
 
 /**
  *
@@ -15,30 +16,30 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class Demanda {
 
-    /**
-     * @return the count
-     */
-    public static AtomicInteger getCount() {
-        return count;
-    }
+ 
 
-    /**
-     * @param aCount the count to set
-     */
-    public static void setCount(AtomicInteger aCount) {
-        count = aCount;
-    }
-
-    private long idDemanda;
-    private String nome;
-    private double preco;
-    private String descricao;
-    private Date prazo;
-    private static AtomicInteger count = new AtomicInteger(0);
+    private /*@ spec_public @*/ long idDemanda;
+    private /*@ spec_public @*/ String nome;
+    private /*@ spec_public @*/ double preco;
+    private /*@ spec_public @*/ String descricao;
+    private /*@ spec_public @*/ Date prazo;
+    private /*@ spec_public @*/ static AtomicInteger count = new AtomicInteger(0);
 
     public Demanda() {
     }
 
+    /*@
+    @	
+    @	requires nome != "";
+    @	requires 0 <= preco;
+    @	requires descricao != "";
+    @   requires date != null;
+    @ 	ensures this.idDemanda == count.longValue() - 1;
+    @	ensures this.nome == nome;
+    @   ensures this.preco == preco;
+    @   ensures this.descricao == descricao;
+    @   ensures this.prazo == date;
+    @*/
     public Demanda(String nome, double preco, String descricao, Date date) {
         this.idDemanda = count.getAndIncrement();
         this.nome = nome;
@@ -51,13 +52,22 @@ public abstract class Demanda {
     /**
      * @return the idDemanda
      */
-    public long getIdDemanda() {
+    public /*@ pure @*/ long getIdDemanda() {
         return idDemanda;
     }
 
-    /**
-     * @param idDemanda the idDemanda to set
-     */
+    /*@		public normal_behavior
+    @			requires 0 <= idDemanda;
+    @			assignable this.idDemanda;
+    @ 			ensures this.idDemanda == idDemanda;
+    @	also
+    @		public exceptional_behavior
+    @		requires idDemanda < 0;
+    @		assignable this.idDemanda;
+    @		signals_only PedidoInvalidoException;
+    @		signals (PedidoInvalidoException e)
+    @				idDemanda < 0;
+    @*/
     public void setIdDemanda(long idDemanda) throws PedidoInvalidoException {
         if (idDemanda < 0) {
             throw new PedidoInvalidoException("Id do demanda Invalido");
@@ -68,13 +78,22 @@ public abstract class Demanda {
     /**
      * @return the nome
      */
-    public String getNome() {
+    public /*@ pure @*/ String getNome() {
         return nome;
     }
 
-    /**
-     * @param nome the nome to set
-     */
+    /*@		public normal_behavior
+    @			requires nome != "";
+    @			assignable this.nome;
+    @ 			ensures this.nome == nome;
+    @	also
+    @		public exceptional_behavior
+    @		requires !(nome instanceof String);
+    @		assignable this.nome;
+    @		signals_only PedidoInvalidoException;
+    @		signals (PedidoInvalidoException e)
+    @				!(nome instanceof String);
+    @*/
     public void setNome(String nome) throws PedidoInvalidoException {
         if (!(nome instanceof String)) {
             throw new PedidoInvalidoException("Nome invalido.");
@@ -85,13 +104,22 @@ public abstract class Demanda {
     /**
      * @return the preco
      */
-    public double getPreco() {
+    public /*@ pure @*/ double getPreco() {
         return preco;
     }
 
-    /**
-     * @param preco the preco to set
-     */
+    /*@		public normal_behavior
+     @			requires 0 <= preco;
+     @			assignable this.preco;
+     @ 			ensures this.preco == preco;
+     @	also
+     @		public exceptional_behavior
+     @		requires preco < 0;
+     @		assignable this.preco;
+     @		signals_only PedidoInvalidoException;
+     @		signals (PedidoInvalidoException e)
+     @				preco < 0;
+     @*/
     public void setPreco(double preco) throws PedidoInvalidoException {
         if (preco < 0) {
             throw new PedidoInvalidoException("Preço invalido.");
@@ -102,13 +130,22 @@ public abstract class Demanda {
     /**
      * @return the descricao
      */
-    public String getDescricao() {
+    public /*@ pure @*/ String getDescricao() {
         return descricao;
     }
 
-    /**
-     * @param descricao the descricao to set
-     */
+    /*@		public normal_behavior
+    @			requires descricao != "";
+    @			assignable this.descricao;
+    @ 			ensures this.descricao == descricao;
+    @	also
+    @		public exceptional_behavior
+    @		requires !(descricao instanceof String);
+    @		assignable this.descricao;
+    @		signals_only PedidoInvalidoException;
+    @		signals (PedidoInvalidoException e)
+    @				!(descricao instanceof String);
+    @*/
     public void setDescricao(String descricao) throws PedidoInvalidoException {
         if (!(descricao instanceof String)) {
             throw new PedidoInvalidoException("Descrição invalida.");
@@ -119,19 +156,35 @@ public abstract class Demanda {
 
     
     
-    public abstract boolean validar();
+    public abstract /*@ pure @*/ boolean validar();
 
     /**
      * @return the prazo
      */
-    public Date getPrazo() {
+    public /*@ pure @*/ Date getPrazo() {
         return prazo;
     }
 
-    /**
-     * @param prazo the prazo to set
-     */
+    /*@ requires prazo != null;
+	@ assignable this.prazo;
+	@ ensures this.prazo == prazo;
+	@*/
     public void setPrazo(Date prazo) {
         this.prazo = prazo;
+    }
+    
+    /**
+     * @return the count
+     */
+    public static /*@ pure @*/ AtomicInteger getCount() {
+        return count;
+    }
+
+    /*@ requires aCount != null;
+	@ assignable count;
+	@ ensures count == aCount;
+	@*/
+    public static void setCount(AtomicInteger aCount) {
+        count = aCount;
     }
 }

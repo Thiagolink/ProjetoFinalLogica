@@ -14,15 +14,30 @@ import java.util.List;
  */
 public abstract class NotaFiscal {
 
-    //preencher com informações relevantes na nota fiscal
-    private String empresa;
-    private String nomeCliente;
-    private Long codigo;
-    private Date dataFaturamento;
-    private double valorTotal;
-    private List<Demanda> demandas;
-
-    public NotaFiscal(String empresa, String nomeCliente, Long codigo, Date dataFaturamento, double valorTotal, List<Demanda> demandas) {
+    private /*@ spec_public @*/ String empresa;
+    private /*@ spec_public @*/ String nomeCliente;
+    private /*@ spec_public @*/ long codigo;
+    private /*@ spec_public @*/ Date dataFaturamento;
+    private /*@ spec_public @*/ double valorTotal;
+    private /*@ spec_public @*/ List<Demanda> demandas;
+    
+    /*@
+    @	
+    @	requires empresa != "";
+    @	requires nomeCliente != "";
+    @	requires 0 <= codigo;
+    @   requires dataFaturamento != null;
+    @	requires 0 <= valorTotal;
+    @	requires demandas != null;
+    @ 	ensures this.empresa == empresa;
+    @	ensures this.nomeCliente == nomeCliente;
+    @   ensures this.codigo == codigo;
+    @   ensures this.dataFaturamento == dataFaturamento;
+    @   ensures this.valorTotal == valorTotal;
+    @	ensures this.demandas == demandas;
+    @*/
+    
+    public NotaFiscal(String empresa, String nomeCliente, long codigo, Date dataFaturamento, double valorTotal, List<Demanda> demandas) {
         this.empresa = empresa;
         this.nomeCliente = nomeCliente;
         this.codigo = codigo;
@@ -36,13 +51,15 @@ public abstract class NotaFiscal {
     /**
      * @return the empresa
      */
-    public String getEmpresa() {
+    public /*@ pure @*/ String getEmpresa() {
         return empresa;
     }
 
-    /**
-     * @param empresa the empresa to set
-     */
+    /*@
+    @	requires empresa != "";
+    @	assignable this.empresa;
+    @ 	ensures this.empresa == empresa;
+    @*/
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
     }
@@ -50,13 +67,15 @@ public abstract class NotaFiscal {
     /**
      * @return the nomeCliente
      */
-    public String getNomeCliente() {
+    public /*@ pure @*/ String getNomeCliente() {
         return nomeCliente;
     }
 
-    /**
-     * @param nomeCliente the nomeCliente to set
-     */
+    /*@
+    @	requires nomeCliente != "";
+    @	assignable this.nomeCliente;
+    @ 	ensures this.nomeCliente == nomeCliente;
+    @*/
     public void setNomeCliente(String nomeCliente) {
         this.nomeCliente = nomeCliente;
     }
@@ -64,27 +83,31 @@ public abstract class NotaFiscal {
     /**
      * @return the codigo
      */
-    public Long getCodigo() {
+    public /*@ pure @*/ long getCodigo() {
         return codigo;
     }
 
-    /**
-     * @param codigo the codigo to set
-     */
-    public void setCodigo(Long codigo) {
+    /*@
+    @	requires 0 <= codigo;
+    @	assignable this.codigo;
+    @ 	ensures this.codigo == codigo;
+    @*/
+    public void setCodigo(long codigo) {
         this.codigo = codigo;
     }
 
     /**
      * @return the dataFaturamento
      */
-    public Date getDataFaturamento() {
+    public /*@ pure @*/ Date getDataFaturamento() {
         return dataFaturamento;
     }
 
-    /**
-     * @param dataFaturamento the dataFaturamento to set
-     */
+    /*@
+    @	requires dataFaturamento != null;
+    @	assignable this.dataFaturamento;
+    @ 	ensures this.dataFaturamento == dataFaturamento;
+    @*/
     public void setDataFaturamento(Date dataFaturamento) {
         this.dataFaturamento = dataFaturamento;
     }
@@ -92,29 +115,33 @@ public abstract class NotaFiscal {
     /**
      * @return the demandas
      */
-    public List<Demanda> getDemandas() {
+    public /*@ pure @*/ List<Demanda> getDemandas() {
         return demandas;
     }
 
-    /**
-     * @param demandas the demandas to set
-     */
+    /*@
+    @	requires demandas != null;
+    @	assignable this.demandas;
+    @ 	ensures this.demandas == demandas;
+    @*/
     public void setDemandas(List<Demanda> demandas) {
         this.demandas = demandas;
     }
 
-    public abstract void imprimir();
+    public /*@ pure @*/ abstract void imprimir();
 
     /**
      * @return the valorTotal
      */
-    public double getValorTotal() {
+    public /*@ pure @*/ double getValorTotal() {
         return valorTotal;
     }
 
-    /**
-     * @param valorTotal the valorTotal to set
-     */
+    /*@
+    @	requires 0 <= valorTotal;
+    @	assignable this.valorTotal;
+    @ 	ensures this.valorTotal == valorTotal;
+    @*/
     public void setValorTotal(int valorTotal) {
         this.valorTotal = valorTotal;
     }

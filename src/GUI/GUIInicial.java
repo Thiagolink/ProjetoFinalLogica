@@ -12,5 +12,7 @@ import domain.Usuario;
  * @author Thiago
  */
 public interface GUIInicial {
+	/*@ requires usuario != null;
+	  @*/
     public void acessarInterface(Usuario usuario);
 }

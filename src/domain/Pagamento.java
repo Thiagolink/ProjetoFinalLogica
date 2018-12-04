@@ -6,19 +6,29 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 /**
  *
  * @author Thiago
  */
 public abstract class Pagamento {
-    private long idDemanda;
-    private String nome;
-    private double valor;
+		
+    private /*@ spec_public @*/ long idDemanda;
+    private /*@ spec_public @*/ String nome;
+    private /*@ spec_public @*/ double valor;
 
     public Pagamento() {
     }
 
+    /*@
+     @	requires 0 <= idDemanda;
+     @	requires nome != "";
+     @	ensures this.idDemanda == idDemanda;
+     @	ensures this.nome == nome;
+     @ 	ensures valor == 0; 
+     @*/
     public Pagamento(long idDemanda, String nome) {
         this.idDemanda = idDemanda;
         this.nome = nome;
@@ -28,13 +38,15 @@ public abstract class Pagamento {
     /**
      * @return the nome
      */
-    public String getNome() {
+    public /*@ pure @*/ String getNome() {
         return nome;
     }
 
-    /**
-     * @param nome the nome to set
-     */
+    /*@
+    @	requires nome != "";
+    @	assignable this.nome;
+    @ 	ensures this.nome == nome;
+    @*/
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -42,13 +54,15 @@ public abstract class Pagamento {
     /**
      * @return the valor
      */
-    public double getValor() {
+    public /*@ pure @*/ double getValor() {
         return valor;
     }
 
-    /**
-     * @param valor the valor to set
-     */
+    /*@
+    @	requires 0 <= valor;
+    @	assignable this.valor;
+    @ 	ensures this.valor == valor;
+    @*/
     public void setValor(double valor) {
         this.valor = valor;
     }
@@ -56,20 +70,29 @@ public abstract class Pagamento {
     /**
      * @return the idDemanda
      */
-    public long getIdDemanda() {
+    public /*@ pure @*/ long getIdDemanda() {
         return idDemanda;
     }
 
-    /**
-     * @param idDemanda the idDemanda to set
-     */
+    /*@
+    @	requires 0 <= idDemanda;
+    @	assignable this.idDemanda;
+    @ 	ensures this.idDemanda == idDemanda;
+    @*/
     public void setIdDemanda(long idDemanda) {
         this.idDemanda = idDemanda;
     }
+    
+    
+    /*@
+    @ 	requires 0 <= valor;
+    @	assignable this.valor;
+    @	ensures this.valor == \old(this.valor) + valor;
+    @*/
     public void somaValor(double valor){
         this.valor += valor;
     }
     public abstract void calcularPagamento(ArrayList<Demanda> listaProdutos);
     
-    public abstract boolean validar();
+    public /*@ pure @*/ abstract boolean validar();
 }

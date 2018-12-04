@@ -16,10 +16,10 @@ import domain.Pedido;
 import domain.Pagamento;
 import domain.Usuario;
 import domain.UsuarioCliente;
+import estoque.Item;
 import excecao.DemandaInvalidoException;
 import excecao.PagamentoInvalidoException;
 import excecao.PedidoInvalidoException;
-import instancia.estoque.Item;
 
 import java.util.ArrayList;
 

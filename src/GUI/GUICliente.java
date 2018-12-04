@@ -5,7 +5,7 @@
  */
 package GUI;
 
-import domain.Pagamento;
+
 import domain.Usuario;
 
 /**
@@ -13,7 +13,13 @@ import domain.Usuario;
  * @author Thiago
  */
 public interface GUICliente {
+	
+	/*@ requires usuario != null ;
+	  @*/
     public void cadastrarPedido(Usuario usuario);
+    
+    /*@ requires usuario != null ;
+	  @*/
     public void listarPedidos(Usuario usuario);
     public void listarDemandas();
 }
